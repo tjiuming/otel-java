@@ -1,0 +1,42 @@
+
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+  pulsar:
+    endpoint: "pulsar://localhost:6650"
+    topic: "persistent://public/default/otlp_spans"
+    subscription: otel_trace_sub
+
+exporters:
+  pulsar:
+    endpoint: "pulsar://localhost:6650"
+    topic: "persistent://public/default/otlp_spans"
+  zipkin:
+    endpoint: "http://localhost:9411/api/v2/spans"
+  logging:
+    loglevel: DEBUG
+
+processors:
+  batch:
+
+extensions:
+  health_check:
+  pprof:
+  zpages:
+
+service:
+  extensions: [pprof, zpages, health_check]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [pulsar, logging]
+      processors: [batch]
+    traces/2:
+      receivers: [pulsar]
+      exporters: [zipkin, logging]
+      processors: [batch]
+
+
+
