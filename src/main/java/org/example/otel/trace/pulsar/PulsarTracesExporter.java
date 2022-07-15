@@ -18,8 +18,8 @@ public record PulsarTracesExporter(PulsarClient client,
 
     @Override
     public CompletableResultCode export(Collection<SpanData> spans) {
-        TraceRequestMarshaler request = TraceRequestMarshaler.create(spans);
-        MarshalerInputStream input = new MarshalerInputStream(request);
+        var request = TraceRequestMarshaler.create(spans);
+        var input = new MarshalerInputStream(request);
         byte[] value;
         try {
             value = input.readAllBytes();
@@ -28,7 +28,7 @@ public record PulsarTracesExporter(PulsarClient client,
             return CompletableResultCode.ofFailure();
         }
 
-        CompletableResultCode result = new CompletableResultCode();
+        var result = new CompletableResultCode();
         producer.newMessage()
                 .value(value)
                 .sendAsync()
@@ -45,7 +45,7 @@ public record PulsarTracesExporter(PulsarClient client,
 
     @Override
     public CompletableResultCode flush() {
-        CompletableResultCode result = new CompletableResultCode();
+        var result = new CompletableResultCode();
         this.producer.flushAsync()
                 .whenComplete((__, t) -> {
                     if (null == t) {
@@ -60,7 +60,7 @@ public record PulsarTracesExporter(PulsarClient client,
 
     @Override
     public CompletableResultCode shutdown() {
-        CompletableResultCode result = new CompletableResultCode();
+        var result = new CompletableResultCode();
         this.producer.closeAsync()
                 .thenApply(unused -> this.client.closeAsync())
                 .thenAccept(__ -> result.succeed())
