@@ -12,7 +12,7 @@ public class PulsarTracesExporterBuilder {
     }
 
     private String topic = "persistent://public/default/otlp_spans";
-    private String serviceURL = "pulsar://localhost:5560";
+    private String serviceURL = "pulsar://localhost:6650";
     private boolean enableBatch = true;
     private Authentication auth = AuthenticationDisabled.INSTANCE;
 

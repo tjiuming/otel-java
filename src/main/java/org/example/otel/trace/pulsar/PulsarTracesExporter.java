@@ -62,7 +62,7 @@ public record PulsarTracesExporter(PulsarClient client,
     public CompletableResultCode shutdown() {
         var result = new CompletableResultCode();
         this.producer.closeAsync()
-                .thenApply(unused -> this.client.closeAsync())
+                .thenApply(__ -> this.client.closeAsync())
                 .thenAccept(__ -> result.succeed())
                 .exceptionally(__ -> {
                     result.fail();
